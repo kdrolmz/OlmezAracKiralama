@@ -1,372 +1,647 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ÖLMEZ ARAÇ KİRALAMA</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#071a2f">
+<title>Ölmez Araç Kiralama</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 :root {
-  --bg: #f6f8f4;
-  --paper: rgba(255,255,255,.78);
-  --paper-2: rgba(250,252,248,.9);
-  --ink: #25332a;
-  --muted: #6c7b6e;
-  --soft: #e4ecdf;
-  --line: rgba(86,113,86,.18);
-  --green: #526f4d;
-  --green-2: #78946f;
-  --nude: #d9c8b6;
-  --shadow: 0 24px 70px -44px rgba(50,70,52,.55);
+  --navy-950: #061526;
+  --navy-900: #071a2f;
+  --navy-800: #0d2744;
+  --navy-700: #173b60;
+  --blue-500: #386a9b;
+  --blue-100: #e9f0f8;
+  --blue-50: #f5f8fc;
+  --paper: #ffffff;
+  --paper-soft: #f8fafc;
+  --ink: #0a1828;
+  --ink-2: #425164;
+  --muted: #7b8795;
+  --line: #d8e0ea;
+  --line-strong: #c2ccda;
+  --champagne: #c5a56a;
+  --champagne-soft: #f6efe2;
+  --wine: #9f4f58;
+  --wine-soft: #fbf0f1;
+  --shadow: 0 18px 42px -28px rgba(6,21,38,.28), 0 4px 14px -10px rgba(6,21,38,.18);
+  --shadow-deep: 0 24px 60px -26px rgba(6,21,38,.45);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
 }
+html, body { min-height: 100%; overscroll-behavior-y: none; }
 body {
   min-height: 100vh;
-  font-family: Inter, sans-serif;
+  font-family: "Aptos", "SF Pro Text", "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(circle at 18% 4%, rgba(255,255,255,.92), transparent 30%),
-    linear-gradient(135deg, #f7f9f4 0%, #edf3e9 48%, #f4eee8 100%);
-  padding: 28px;
+    linear-gradient(180deg, rgba(7,26,47,.05) 0%, rgba(245,248,252,0) 220px),
+    linear-gradient(180deg, #f7f9fc 0%, #edf2f7 100%);
+  padding: calc(var(--safe-top) + 14px) 14px calc(var(--safe-bot) + 100px);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02","cv03","cv04","tnum";
 }
-button, input, select, textarea { font: inherit; }
-button { cursor: pointer; }
-.shell { max-width: 1180px; margin: 0 auto; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: none; }
+input, select, textarea { -webkit-appearance: none; appearance: none; }
+input[type="date"], input[type="time"], input[type="month"] { color-scheme: light; }
+.shell { width: min(100%, 520px); margin: 0 auto; }
+
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 18px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
-.brand { display: flex; align-items: center; gap: 13px; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .brand-mark {
   width: 46px; height: 46px;
   display: grid; place-items: center;
-  border-radius: 14px;
-  background: linear-gradient(145deg, #ffffff, #eaf2e5);
-  border: 1px solid var(--line);
-  color: var(--green);
-  font-weight: 800;
+  border-radius: 8px;
+  background: linear-gradient(145deg, var(--navy-900), var(--navy-700));
+  color: #fff;
+  font-weight: 760;
+  font-size: 22px;
   box-shadow: var(--shadow);
+  flex: 0 0 auto;
 }
-.brand-name { font-size: 23px; font-weight: 700; letter-spacing: .02em; }
-.brand-sub {
-  margin-top: 3px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: .18em;
-  color: var(--muted);
-  text-transform: uppercase;
+.brand-name { font-size: 18px; font-weight: 760; line-height: 1.08; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-sub { margin-top: 3px; font-size: 12px; color: var(--muted); font-weight: 520; }
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
 }
-.actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-.btn {
-  min-height: 42px;
+.summary-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.9);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 0 15px;
-  background: rgba(255,255,255,.72);
-  color: var(--ink);
+  box-shadow: 0 8px 24px -22px rgba(6,21,38,.35);
+}
+.summary-chip-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-500); box-shadow: 0 0 0 4px rgba(56,106,155,.12); }
+.summary-chip-text { font-size: 11px; font-weight: 620; color: var(--muted); }
+.summary-chip-num { margin-top: 1px; font-size: 13px; font-weight: 760; color: var(--navy-900); font-variant-numeric: tabular-nums; }
+.backup-btn {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
+  gap: 7px;
+  background: rgba(255,255,255,.92);
+  border: 1px solid var(--line);
+  color: var(--navy-900);
   font-size: 13px;
-  font-weight: 600;
-  box-shadow: 0 14px 30px -26px rgba(44,62,48,.45);
+  font-weight: 720;
+  box-shadow: 0 8px 24px -22px rgba(6,21,38,.35);
 }
-.btn.primary {
-  background: linear-gradient(135deg, rgba(120,148,111,.26), rgba(255,255,255,.72));
-  border-color: rgba(82,111,77,.32);
-  color: #334a36;
+.backup-btn svg { width: 16px; height: 16px; }
+.backup-btn:active { transform: scale(.97); }
+
+.hero {
+  margin-bottom: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.11), rgba(255,255,255,0) 42%),
+    linear-gradient(135deg, var(--navy-950), var(--navy-800));
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: var(--shadow-deep);
 }
-.btn.danger { color: #9a504c; background: rgba(178,104,98,.08); }
-.btn svg { width: 16px; height: 16px; }
-.car-grid {
+.hero-top { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+.hero-title { font-size: 22px; line-height: 1.08; font-weight: 760; letter-spacing: 0; }
+.hero-note { margin-top: 5px; color: rgba(255,255,255,.66); font-size: 12.5px; line-height: 1.35; }
+.year-control { display: inline-flex; align-items: center; gap: 7px; padding: 5px; border-radius: 8px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.13); flex: 0 0 auto; }
+.year-btn {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  font-size: 19px;
+  line-height: 1;
+}
+.year-label {
+  min-width: 54px;
+  min-height: 30px;
+  padding: 0 8px;
+  border-radius: 7px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
-  gap: 16px;
+  place-items: center;
+  text-align: center;
+  color: #fff;
+  font-weight: 740;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
-.car-card {
-  min-height: 205px;
-  background: linear-gradient(145deg, rgba(255,255,255,.82), rgba(247,250,245,.66));
+.year-label.active { background: #fff; color: var(--navy-900); }
+.hero-row { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 8px; }
+.hero-cell {
+  min-width: 0;
+  padding: 12px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.hero-label { font-size: 11px; color: rgba(255,255,255,.62); font-weight: 620; }
+.hero-value {
+  margin-top: 7px;
+  font-size: 22px;
+  font-weight: 760;
+  color: #fff;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.hero-value.accent { color: #f6dfb2; }
+
+.revenue-panel {
+  margin-bottom: 12px;
+  padding: 14px;
+  border-radius: 8px;
+  background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 18px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(18px) saturate(1.12);
-  transition: transform .18s, border-color .18s, box-shadow .18s;
 }
-.car-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(82,111,77,.34);
-  box-shadow: 0 28px 70px -42px rgba(50,70,52,.72);
+.revenue-panel[hidden] { display: none; }
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
 }
-.car-head {
+.section-title { font-size: 16px; font-weight: 740; letter-spacing: 0; }
+.section-sub { margin-top: 3px; color: var(--muted); font-size: 12px; line-height: 1.35; }
+.year-total { text-align: right; color: var(--navy-900); font-weight: 760; font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.month-grid {
   display: grid;
-  grid-template-columns: 58px 1fr;
-  gap: 13px;
-  align-items: center;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
 }
-.logo {
-  width: 58px; height: 58px;
-  border-radius: 16px;
-  background: rgba(255,255,255,.72);
+.month-tile {
+  min-height: 62px;
+  border-radius: 8px;
   border: 1px solid var(--line);
-  padding: 9px;
+  background: var(--paper-soft);
+  padding: 8px;
+  text-align: left;
+  transition: border-color .15s, background .15s, transform .12s;
+}
+.month-tile:active { transform: scale(.98); }
+.month-tile.active { border-color: var(--navy-700); background: #eef4fb; box-shadow: inset 0 0 0 1px rgba(13,39,68,.08); }
+.month-name { font-size: 11px; color: var(--muted); font-weight: 660; }
+.month-money { margin-top: 7px; color: var(--navy-900); font-size: 13px; font-weight: 760; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.month-detail {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 7px;
+}
+.month-row {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+}
+.month-row-name { font-weight: 690; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.month-row-meta { margin-top: 2px; color: var(--muted); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.month-row-money { color: var(--navy-900); font-weight: 760; font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.car-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.car-card {
+  width: 100%;
+  text-align: left;
+  position: relative;
+  padding: 14px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  transition: transform .14s ease, border-color .18s, background .18s;
+  overflow: hidden;
+}
+.car-card:active { transform: scale(.988); }
+.car-card.busy { border-color: #dec1c7; background: linear-gradient(180deg, #fff 0%, #fff8f9 100%); }
+.car-card.available { border-color: #c9d7e6; background: linear-gradient(180deg, #fff 0%, #f7fbff 100%); }
+.car-head { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 11px; align-items: center; }
+.logo {
+  width: 48px; height: 48px;
+  border-radius: 8px;
+  background: #f4f7fb;
+  border: 1px solid var(--line);
+  padding: 8px;
   display: grid;
   place-items: center;
 }
 .logo svg { width: 100%; height: 100%; }
-.car-title { font-size: 18px; font-weight: 700; line-height: 1.18; }
-.plate {
-  display: inline-flex;
-  margin-top: 8px;
-  padding: 5px 10px;
-  border-radius: 7px;
-  background: #fff;
-  border: 1px solid rgba(42,55,45,.16);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .08em;
-  color: #111;
-}
-.next-res {
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--line);
-}
-.next-label {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.next-name {
+.car-title-wrap { min-width: 0; }
+.car-title { font-size: 16px; font-weight: 760; line-height: 1.18; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vehicle-line {
   margin-top: 7px;
-  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.vehicle-line span { flex: 0 0 auto; }
+.vehicle-line .soft { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.plate-chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 140px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  color: var(--navy-900);
+  font-size: 12px;
+  font-weight: 760;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: inset 4px 0 0 var(--navy-800);
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  font-size: 11px;
   font-weight: 700;
+  white-space: nowrap;
 }
-.next-date {
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 12.5px;
-  line-height: 1.45;
+.status-pill.busy { background: var(--wine-soft); color: var(--wine); border: 1px solid #e7c4ca; }
+.status-pill.free { background: var(--blue-100); color: var(--navy-700); border: 1px solid #c9d7e6; }
+.status-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.next-res { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.next-label { font-size: 12px; color: var(--muted); font-weight: 650; }
+.next-name { margin-top: 6px; font-size: 14px; font-weight: 720; color: var(--ink); }
+.next-date { margin-top: 3px; color: var(--ink-2); font-size: 12.5px; line-height: 1.35; font-variant-numeric: tabular-nums; }
+.next-revenue { margin-top: 8px; display: flex; gap: 7px; flex-wrap: wrap; }
+.next-revenue-tag {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: #eef4fb;
+  color: var(--navy-800);
+  border: 1px solid #d3deea;
+  font-variant-numeric: tabular-nums;
 }
+.next-revenue-tag.kadir { background: var(--champagne-soft); border-color: #ead9b9; color: #8a6428; }
 .empty {
-  grid-column: 1/-1;
-  min-height: 260px;
+  padding: 42px 22px;
   display: grid;
   place-items: center;
-  border: 1px dashed var(--line);
-  border-radius: 18px;
-  background: rgba(255,255,255,.48);
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+  background: var(--paper);
   color: var(--muted);
   text-align: center;
-  padding: 28px;
+  box-shadow: var(--shadow);
 }
+.empty strong { display: block; color: var(--ink); font-size: 16px; margin-bottom: 5px; }
+
+.dock {
+  position: fixed;
+  bottom: calc(var(--safe-bot) + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(7,26,47,.92);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow-deep);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+}
+.dock-btn {
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.12);
+  transition: transform .12s, background .18s;
+}
+.dock-btn:active { transform: scale(.96); }
+.dock-btn.primary { background: #fff; color: var(--navy-900); border-color: transparent; }
+.dock-btn svg { width: 17px; height: 17px; }
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 30;
   display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  background: rgba(42,58,43,.28);
-  backdrop-filter: blur(18px);
+  background: rgba(6,21,38,.46);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: fadeIn .18s ease;
 }
-.modal-backdrop.show { display: flex; }
-.modal {
-  width: min(980px, 100%);
-  max-height: 92vh;
-  overflow: auto;
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,.78);
-  background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(246,250,244,.88));
-  box-shadow: 0 34px 90px -46px rgba(29,44,34,.8);
+.modal-backdrop.show { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(36px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  max-height: 94dvh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px 18px 0 0;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -30px 80px -35px rgba(6,21,38,.55);
+  animation: slideUp .25s cubic-bezier(.22,.61,.36,1);
+  padding-bottom: var(--safe-bot);
 }
-.modal.small { width: min(640px, 100%); }
-.modal-head {
+.sheet-grabber { width: 42px; height: 4px; border-radius: 3px; background: #cbd4df; margin: 9px auto 0; }
+.sheet-head {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--line);
-  background: rgba(255,255,255,.82);
-  backdrop-filter: blur(20px);
+  padding: 14px 18px 12px;
+  background: rgba(255,255,255,.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(216,224,234,.65);
 }
-.modal-title { font-size: 20px; font-weight: 700; }
-.modal-body { padding: 20px; }
-.modal-foot {
+.sheet-title { font-size: 18px; font-weight: 760; letter-spacing: 0; }
+.sheet-body { padding: 16px 18px 18px; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; }
+.sheet-foot {
   display: flex;
-  justify-content: flex-end;
   gap: 10px;
-  padding: 15px 20px;
+  padding: 12px 18px calc(12px + var(--safe-bot));
   border-top: 1px solid var(--line);
-  background: rgba(255,255,255,.62);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(14px);
 }
+.sheet-foot .btn { flex: 1; }
 .icon-btn {
-  width: 40px; height: 40px;
+  width: 38px; height: 38px;
   display: grid; place-items: center;
+  border-radius: 8px;
+  background: var(--paper-soft);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(255,255,255,.72);
   color: var(--ink);
+  font-size: 20px;
+  font-weight: 520;
 }
-.detail-top {
-  display: grid;
-  grid-template-columns: 72px 1fr auto;
-  gap: 15px;
+.icon-btn:active { transform: scale(.94); }
+.btn {
+  min-height: 46px;
+  border-radius: 8px;
+  padding: 0 15px;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 18px;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: transform .12s, background .18s;
 }
-.detail-logo { width: 72px; height: 72px; border-radius: 18px; }
-.detail-title { font-size: 24px; font-weight: 700; }
-.detail-sub { margin-top: 5px; color: var(--muted); font-size: 13px; }
-.detail-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-.calendar-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin: 16px 0 10px;
-}
-.month-title {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  letter-spacing: .1em;
-  color: var(--muted);
-  text-transform: uppercase;
-  text-align: center;
-}
-.month-grid {
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--navy-900); color: #fff; border-color: var(--navy-900); box-shadow: 0 12px 26px -18px rgba(7,26,47,.55); }
+.btn.danger { background: var(--wine-soft); color: var(--wine); border-color: #e7c4ca; }
+.btn.ghost { background: transparent; }
+.btn svg { width: 16px; height: 16px; }
+
+.detail-top { display: grid; grid-template-columns: 58px minmax(0,1fr); gap: 12px; align-items: center; margin-bottom: 14px; }
+.detail-logo { width: 58px; height: 58px; border-radius: 8px; }
+.detail-title { font-size: 21px; font-weight: 760; letter-spacing: 0; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.detail-sub { margin-top: 7px; display: flex; gap: 6px; align-items: center; min-width: 0; overflow: hidden; }
+.detail-sub .soft { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.detail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+.calendar-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 12px 0 10px; }
+.calendar-title { font-size: 15px; color: var(--navy-900); font-weight: 760; text-align: center; flex: 1; text-transform: capitalize; }
+.nav-btn { width: 38px; height: 38px; border-radius: 8px; background: var(--paper-soft); border: 1px solid var(--line); color: var(--navy-900); font-size: 18px; font-weight: 700; }
+.nav-btn:active { transform: scale(.94); }
+.calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 6px;
+  gap: 4px;
 }
-.day-name {
-  padding: 8px 4px;
-  text-align: center;
-  color: var(--muted);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: .08em;
-}
+.day-name { padding: 6px 2px; text-align: center; color: var(--muted); font-size: 10px; font-weight: 700; }
 .day {
-  min-height: 82px;
+  min-height: 52px;
   border: 1px solid var(--line);
-  border-radius: 11px;
-  padding: 7px;
-  background: rgba(255,255,255,.58);
+  border-radius: 8px;
+  padding: 5px;
+  background: #fff;
   overflow: hidden;
+  position: relative;
 }
-.day.other { opacity: .35; }
-.day.busy {
-  background: rgba(120,148,111,.13);
-  border-color: rgba(82,111,77,.27);
-}
-.day-num {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  font-weight: 800;
-}
-.day-customer {
-  margin-top: 7px;
-  color: #435f43;
-  font-weight: 800;
-  line-height: 1.08;
-}
-.day-customer span {
-  display: block;
-  white-space: nowrap;
-}
-.day-free {
-  margin-top: 7px;
-  color: #78946f;
-  font-size: 10px;
-  font-weight: 700;
-}
-.res-list {
-  margin-top: 18px;
-  border-top: 1px solid var(--line);
-}
+.day.other { opacity: .34; }
+.day.today { border-color: var(--champagne); box-shadow: inset 0 0 0 1px rgba(197,165,106,.28); }
+.day.busy { background: #fff7f8; border-color: #e5c2c7; }
+.day-num { font-size: 11px; font-weight: 760; color: var(--ink); font-variant-numeric: tabular-nums; }
+.day.busy .day-num { color: var(--wine); }
+.day.other .day-num { color: var(--muted); }
+.day-customer { margin-top: 4px; color: var(--ink); font-weight: 740; line-height: 1.05; font-size: 8.4px; }
+.day-customer span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.day-free { margin-top: 4px; color: var(--muted); font-size: 9px; font-weight: 620; }
+.res-list { margin-top: 16px; }
 .res-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  align-items: center;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
+  padding: 13px;
+  border-radius: 8px;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  margin-bottom: 8px;
 }
-.res-main { font-weight: 700; }
-.res-meta { margin-top: 4px; color: var(--muted); font-size: 12.5px; line-height: 1.45; }
-.res-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+.res-main { font-weight: 750; font-size: 15px; letter-spacing: 0; }
+.res-meta { margin-top: 5px; color: var(--ink-2); font-size: 12.5px; line-height: 1.45; font-variant-numeric: tabular-nums; }
+.res-money-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.res-money-tag {
+  font-size: 11.5px;
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
 }
+.res-money-tag b { color: var(--navy-900); font-weight: 760; }
+.res-money-tag span { color: var(--muted); font-size: 10px; display: block; margin-bottom: 2px; }
+.res-money-tag.kadir b, .res-money-tag.kadir span { color: #8a6428; }
+.res-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+.res-actions .btn { min-height: 40px; font-size: 12.5px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .field { display: grid; gap: 6px; }
 .field.full { grid-column: 1/-1; }
-label {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-input, select, textarea {
-  min-height: 44px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 11px 12px;
-  background: rgba(255,255,255,.76);
-  color: var(--ink);
-}
-textarea { min-height: 78px; resize: vertical; }
-.calc-box {
+.section-title-form {
   grid-column: 1/-1;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  font-size: 13px;
+  color: var(--navy-900);
+  font-weight: 760;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
 }
-.calc-card {
-  padding: 10px;
+.section-title-form:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+label { font-size: 12px; color: var(--ink-2); font-weight: 650; }
+input, select, textarea {
+  min-height: 46px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 15px;
+  transition: border-color .18s, box-shadow .18s, background .18s;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--navy-700); box-shadow: 0 0 0 3px rgba(13,39,68,.09); }
+input::placeholder, textarea::placeholder { color: #a3acb8; }
+textarea { min-height: 74px; resize: vertical; font-family: inherit; }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23071a2f'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+.summary-card {
+  grid-column: 1/-1;
+  margin-top: 8px;
+  padding: 14px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #f8fafc, #ffffff);
   border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(255,255,255,.56);
 }
-.calc-label {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 9px;
+.summary-total { text-align: center; padding: 3px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.summary-total-label { font-size: 12px; color: var(--muted); font-weight: 650; }
+.summary-total-value { margin-top: 5px; font-size: 30px; font-weight: 780; color: var(--navy-900); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: 0; }
+.summary-lines { display: grid; gap: 7px; }
+.summary-line { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.summary-line-key { color: var(--ink-2); font-weight: 540; }
+.summary-line-val { font-weight: 720; color: var(--ink); white-space: nowrap; }
+.summary-line.muted .summary-line-val { color: var(--muted); }
+.summary-divider { height: 1px; background: var(--line); margin: 5px 0; }
+.summary-line.highlight .summary-line-key { color: var(--navy-900); font-weight: 720; }
+.summary-line.highlight .summary-line-val { color: var(--navy-900); font-size: 15px; font-weight: 780; }
+.summary-line.kadir .summary-line-key, .summary-line.kadir .summary-line-val { color: #8a6428; }
+.summary-status {
+  margin-top: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: var(--blue-100);
+  border: 1px solid #d3deea;
+  color: var(--navy-800);
+  font-size: 12px;
+  font-weight: 650;
+}
+.summary-status.kadir { background: var(--champagne-soft); border-color: #ead9b9; color: #8a6428; }
+.backup-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.backup-stat {
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+}
+.backup-stat span {
+  display: block;
   color: var(--muted);
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 640;
 }
-.calc-value { margin-top: 5px; font-weight: 800; }
-@media (max-width: 700px) {
-  body { padding: 14px; }
-  .topbar { align-items: stretch; flex-direction: column; }
-  .actions { display: grid; grid-template-columns: 1fr 1fr; }
-  .btn { width: 100%; padding: 0 10px; }
-  .car-grid { grid-template-columns: 1fr; }
-  .modal-backdrop { padding: 0; align-items: stretch; }
-  .modal { max-height: 100dvh; border-radius: 0; }
-  .modal-body { padding: 14px; }
-  .detail-top { grid-template-columns: 58px 1fr; }
-  .detail-logo { width: 58px; height: 58px; }
-  .detail-actions { grid-column: 1/-1; justify-content: flex-start; }
-  .month-grid { gap: 4px; }
-  .day { min-height: 62px; padding: 5px; border-radius: 9px; }
-  .form-grid, .calc-box { grid-template-columns: 1fr; }
-  .res-row { grid-template-columns: 1fr; }
-  .res-actions { justify-content: flex-start; }
+.backup-stat b {
+  display: block;
+  margin-top: 5px;
+  color: var(--navy-900);
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 780;
+  font-variant-numeric: tabular-nums;
+}
+.backup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.backup-text {
+  min-height: 112px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.hidden-file { display: none; }
+.toast {
+  position: fixed;
+  left: 50%;
+  top: calc(var(--safe-top) + 14px);
+  transform: translateX(-50%);
+  z-index: 90;
+  max-width: min(90vw, 420px);
+  padding: 11px 15px;
+  border-radius: 999px;
+  background: var(--navy-900);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-deep);
+}
+
+@media (max-width: 460px) {
+  body { padding-left: 10px; padding-right: 10px; }
+  .brand-name { font-size: 16px; }
+  .topbar { align-items: flex-start; }
+  .top-actions { flex-direction: column; align-items: stretch; gap: 6px; }
+  .summary-chip, .backup-btn { min-height: 38px; padding: 7px 10px; }
+  .backup-btn { justify-content: center; }
+  .hero { padding: 14px; }
+  .hero-top { flex-direction: column; align-items: stretch; }
+  .year-control { align-self: flex-start; }
+  .hero-row { grid-template-columns: 1fr 1fr; }
+  .hero-cell:last-child { grid-column: 1 / -1; }
+  .month-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .car-head { grid-template-columns: 44px minmax(0, 1fr); }
+  .car-head .status-pill { grid-column: 1 / -1; justify-self: start; }
+  .logo { width: 44px; height: 44px; }
+}
+@media (min-width: 700px) {
+  .shell { width: min(100%, 860px); }
+  .car-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 </style>
 </head>
@@ -377,124 +652,239 @@ textarea { min-height: 78px; resize: vertical; }
       <div class="brand-mark">Ö</div>
       <div>
         <div class="brand-name">Ölmez Araç Kiralama</div>
-        <div class="brand-sub">Filo ve Rezervasyon</div>
+        <div class="brand-sub">Filo ve rezervasyon yönetimi</div>
       </div>
     </div>
-    <div class="actions">
-      <button class="btn" onclick="openReservationModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Yeni Rezervasyon
+    <div class="top-actions">
+      <button class="backup-btn" onclick="openBackupModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+        Yedek
       </button>
-      <button class="btn primary" onclick="openVehicleModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Araç Ekle
-      </button>
+      <div class="summary-chip">
+        <div class="summary-chip-dot"></div>
+        <div>
+          <div class="summary-chip-text">Bugün dolu</div>
+          <div class="summary-chip-num" id="activeNum">0</div>
+        </div>
+      </div>
     </div>
   </header>
 
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="hero-title">Ölmez Araç Kiralama</div>
+        <div class="hero-note">Araçlar, rezervasyonlar ve kazançlar tek ekranda.</div>
+      </div>
+      <div class="year-control">
+        <button class="year-btn" onclick="changeReportYear(-1)" aria-label="Önceki yıl">‹</button>
+        <button class="year-label" id="reportYearLabel" onclick="toggleRevenuePanel()">2026</button>
+        <button class="year-btn" onclick="changeReportYear(1)" aria-label="Sonraki yıl">›</button>
+      </div>
+    </div>
+    <div class="hero-row">
+      <div class="hero-cell">
+        <div class="hero-label">Filo</div>
+        <div class="hero-value" id="statVehicles">0</div>
+      </div>
+      <div class="hero-cell">
+        <div class="hero-label">Bugün Dolu</div>
+        <div class="hero-value" id="statBusy">0</div>
+      </div>
+      <div class="hero-cell">
+        <div class="hero-label">Yıl Kazancı</div>
+        <div class="hero-value accent" id="statRevenue">₺0</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="revenue-panel" id="revenuePanel" hidden></section>
   <main class="car-grid" id="carGrid"></main>
 </div>
 
+<div class="dock">
+  <button class="dock-btn" onclick="openReservationModal()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Rezervasyon
+  </button>
+  <button class="dock-btn primary" onclick="openVehicleModal()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    Araç
+  </button>
+</div>
+
 <div class="modal-backdrop" id="vehicleDetailModal">
-  <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title" id="detailModalTitle">Araç</div>
-      <button class="icon-btn" onclick="closeModal('vehicleDetailModal')">×</button>
+  <div class="sheet">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" id="detailModalTitle">Araç</div>
+      <button class="icon-btn" onclick="closeModal('vehicleDetailModal')" aria-label="Kapat">×</button>
     </div>
-    <div class="modal-body" id="vehicleDetailBody"></div>
+    <div class="sheet-body" id="vehicleDetailBody"></div>
   </div>
 </div>
 
 <div class="modal-backdrop" id="vehicleModal">
-  <div class="modal small">
-    <div class="modal-head">
-      <div class="modal-title" id="vehicleModalTitle">Araç Ekle</div>
-      <button class="icon-btn" onclick="closeModal('vehicleModal')">×</button>
+  <div class="sheet">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" id="vehicleModalTitle">Araç Ekle</div>
+      <button class="icon-btn" onclick="closeModal('vehicleModal')" aria-label="Kapat">×</button>
     </div>
-    <div class="modal-body">
+    <div class="sheet-body">
       <div class="form-grid">
-        <div class="field"><label>Marka</label><input id="vBrand" autocomplete="off"></div>
-        <div class="field"><label>Model</label><input id="vModel" autocomplete="off"></div>
-        <div class="field"><label>Plaka</label><input id="vPlate" autocomplete="off"></div>
-        <div class="field"><label>Yıl</label><input id="vYear" type="number"></div>
-        <div class="field"><label>Renk</label><input id="vColor" autocomplete="off"></div>
-        <div class="field"><label>Yakıt</label><input id="vFuel" autocomplete="off"></div>
+        <div class="field"><label>Marka</label><input id="vBrand" autocomplete="off" placeholder="Toyota"></div>
+        <div class="field"><label>Model</label><input id="vModel" autocomplete="off" placeholder="Corolla"></div>
+        <div class="field full"><label>Plaka</label><input id="vPlate" autocomplete="off" placeholder="16 LMZ 77" style="text-transform:uppercase"></div>
+        <div class="field"><label>Yıl</label><input id="vYear" type="number" inputmode="numeric" placeholder="2024"></div>
+        <div class="field"><label>Renk</label><input id="vColor" autocomplete="off" placeholder="Beyaz"></div>
+        <div class="field full"><label>Yakıt</label><input id="vFuel" autocomplete="off" placeholder="Dizel / Benzin / Hibrit"></div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn" onclick="closeModal('vehicleModal')">İptal</button>
+    <div class="sheet-foot">
+      <button class="btn" onclick="closeModal('vehicleModal')">Vazgeç</button>
       <button class="btn primary" onclick="saveVehicle()">Kaydet</button>
     </div>
   </div>
 </div>
 
 <div class="modal-backdrop" id="reservationModal">
-  <div class="modal small">
-    <div class="modal-head">
-      <div class="modal-title" id="reservationModalTitle">Yeni Rezervasyon</div>
-      <button class="icon-btn" onclick="closeModal('reservationModal')">×</button>
+  <div class="sheet">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" id="reservationModalTitle">Yeni Rezervasyon</div>
+      <button class="icon-btn" onclick="closeModal('reservationModal')" aria-label="Kapat">×</button>
     </div>
-    <div class="modal-body">
+    <div class="sheet-body">
       <div class="form-grid">
+        <div class="section-title-form">Araç ve müşteri</div>
         <div class="field full"><label>Araç</label><select id="rVehicle"></select></div>
-        <div class="field"><label>Müşteri</label><input id="rCustomer" autocomplete="off"></div>
-        <div class="field"><label>Telefon</label><input id="rPhone" autocomplete="off"></div>
+        <div class="field"><label>Müşteri Adı</label><input id="rCustomer" autocomplete="off" placeholder="Ad Soyad"></div>
+        <div class="field"><label>Telefon</label><input id="rPhone" autocomplete="off" inputmode="tel" placeholder="05XX"></div>
+
+        <div class="section-title-form">Tarih</div>
         <div class="field"><label>Başlangıç</label><input id="rStart" type="date" onchange="updateReservationCalc()"></div>
         <div class="field"><label>Bitiş</label><input id="rEnd" type="date" onchange="updateReservationCalc()"></div>
         <div class="field"><label>Veriliş Saati</label><input id="rTimeStart" type="time"></div>
         <div class="field"><label>Dönüş Saati</label><input id="rTimeEnd" type="time"></div>
-        <div class="field"><label>Araç Günlük</label><input id="rVehicleDaily" type="number" oninput="updateReservationCalc()"></div>
-        <div class="field"><label>Müşteri Günlük</label><input id="rCustomerDaily" type="number" oninput="updateReservationCalc()"></div>
+
+        <div class="section-title-form">Kira ve komisyon</div>
+        <div class="field"><label>Araç Sahibine Günlük</label><input id="rVehicleDaily" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
+        <div class="field"><label>Müşteriye Günlük</label><input id="rCustomerDaily" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
         <div class="field"><label>Para Birimi</label><select id="rCurrency" onchange="updateReservationCalc()"><option value="TL">₺ TL</option><option value="USD">$ USD</option><option value="EUR">€ EUR</option></select></div>
-        <div class="field"><label>İş Kimden Geldi?</label><input id="rReferral" autocomplete="off"></div>
-        <div class="calc-box" id="reservationCalc"></div>
-        <div class="field full"><label>Not</label><textarea id="rNotes"></textarea></div>
+        <div class="field"><label>Kiraya Veren Kişi</label><input id="rReferral" autocomplete="off" placeholder="Ad Soyad" oninput="updateReservationCalc()"></div>
+
+        <div class="section-title-form">Ek kalemler</div>
+        <div class="field"><label>Yıkama Ücreti</label><input id="rWash" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
+        <div class="field"><label>HGS Toplamı</label><input id="rHgs" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
+        <div class="field full"><label>Trafik Cezası</label><input id="rFine" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
+
+        <div class="summary-card" id="reservationCalc"></div>
+
+        <div class="section-title-form">Not</div>
+        <div class="field full"><textarea id="rNotes" placeholder="Ek bilgi"></textarea></div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn" onclick="closeModal('reservationModal')">İptal</button>
+    <div class="sheet-foot">
+      <button class="btn" onclick="closeModal('reservationModal')">Vazgeç</button>
       <button class="btn primary" onclick="saveReservation()">Kaydet</button>
     </div>
   </div>
 </div>
 
+<div class="modal-backdrop" id="backupModal">
+  <div class="sheet">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">Yedekleme</div>
+      <button class="icon-btn" onclick="closeModal('backupModal')" aria-label="Kapat">×</button>
+    </div>
+    <div class="sheet-body">
+      <div class="backup-overview">
+        <div class="backup-stat"><span>Araç</span><b id="backupVehicleCount">0</b></div>
+        <div class="backup-stat"><span>Rezervasyon</span><b id="backupReservationCount">0</b></div>
+      </div>
+      <div class="backup-actions">
+        <button class="btn primary" onclick="exportBackup()">Yedek Al</button>
+        <button class="btn" onclick="selectBackupFile()">Geri Yükle</button>
+      </div>
+      <input class="hidden-file" id="backupFile" type="file" accept="application/json,.json" onchange="restoreBackupFromFile(this)">
+      <div class="field full">
+        <label>Manuel yedek metni</label>
+        <textarea class="backup-text" id="backupText" placeholder="Yedek Al butonu buraya kopyalanabilir metni de hazırlar. İstersen eski yedek metnini buraya yapıştırıp alttaki butonla geri yükleyebilirsin."></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+        <button class="btn" onclick="copyBackupText()">Metni Kopyala</button>
+        <button class="btn danger" onclick="restoreBackupFromText()">Metinden Yükle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toastRoot"></div>
+
 <script>
 const BOOTSTRAP_DATA = {
-  exportedAt: "2026-05-11T13:51:59.251Z",
+  exportedAt: "2026-05-19T00:00:00.000Z",
   vehicles: [
-    {"brand":"Toyota","model":"Procity","year":"2021","plate":"16LMZ77","fuel":"Dizel","transmission":"Otomatik","km":"","color":"Beyaz","status":"available","customer":"","phone":"","rentStart":"","rentEnd":"","dailyRate":"","currency":"","depositTaken":"no","depositAmount":"","depositCurrency":"","deliveryLocation":"","returnLocation":"","deliveryFeeTaken":"no","deliveryFee":"","deliveryFeeCurrency":"","inspectionDate":"","nextInspection":"","insuranceEnd":"","kaskoEnd":"","lastService":"","nextServiceKm":"","notes":"","vehicleDailyRate":"","referralSource":"","commissionTo":"","commissionAmount":0,"commissionCurrency":"TL","id":1778505149839},
-    {"brand":"Fiat","model":"Egea","year":"2021","plate":"34 GEV 368","fuel":"Benzin","transmission":"Otomatik","km":"","color":"Beyaz","status":"available","customer":"","phone":"","rentStart":"","rentEnd":"","dailyRate":"","currency":"","depositTaken":"no","depositAmount":"","depositCurrency":"","deliveryLocation":"","returnLocation":"","deliveryFeeTaken":"no","deliveryFee":"","deliveryFeeCurrency":"","inspectionDate":"","nextInspection":"","insuranceEnd":"","kaskoEnd":"","lastService":"","nextServiceKm":"","notes":"","vehicleDailyRate":"","referralSource":"","commissionTo":"","commissionAmount":0,"commissionCurrency":"TL","id":1778505195329}
+    {"brand":"Toyota","model":"Procity","year":"2021","plate":"16LMZ77","fuel":"Dizel","color":"Beyaz","status":"available","id":1778505149839},
+    {"brand":"Fiat","model":"Egea","year":"2021","plate":"34 GEV 368","fuel":"Benzin","color":"Beyaz","status":"available","id":1778505195329}
   ],
   reservations: [
-    {"vehicleId":1778505149839,"customer":"Saeed Hassan","phone":"","email":"","start":"2026-05-18","end":"2026-06-08","timeStart":"23:30","timeEnd":"14:30","vehicleDailyRate":"1750","dailyRate":"1900","currency":"TL","referralSource":"Eren Çalışkan","commissionTo":"","commissionAmount":"3150","commissionCurrency":"TL","depositTaken":"no","depositAmount":"","depositCurrency":"TL","deliveryLocation":"Sabiha Gökçen Havalimanı","returnLocation":"İstanbul Havalimanı","deliveryFeeTaken":"no","deliveryFee":"8000","deliveryFeeCurrency":"TL","notes":"","status":"confirmed","id":1778505294347},
-    {"vehicleId":1778505195329,"customer":"Fevzi Bey","phone":"","email":"","start":"2026-05-14","end":"2026-05-20","timeStart":"14:30","timeEnd":"14:30","vehicleDailyRate":"1400","dailyRate":"1500","currency":"TL","referralSource":"Kadir Ölmez","commissionTo":"","commissionAmount":"600","commissionCurrency":"TL","depositTaken":"no","depositAmount":"","depositCurrency":"TL","deliveryLocation":"","returnLocation":"","deliveryFeeTaken":"no","deliveryFee":"","deliveryFeeCurrency":"TL","notes":"","status":"confirmed","id":1778505349222},
-    {"vehicleId":1778505195329,"customer":"Fatma Alyaqut","phone":"","email":"","start":"2026-05-20","end":"2026-05-31","timeStart":"15:15","timeEnd":"15:15","vehicleDailyRate":"1300","dailyRate":"1500","currency":"TL","referralSource":"Kadir Ölmez","commissionTo":"","commissionAmount":"2200","commissionCurrency":"TL","depositTaken":"no","depositAmount":"","depositCurrency":"TL","deliveryLocation":"","returnLocation":"","deliveryFeeTaken":"no","deliveryFee":"","deliveryFeeCurrency":"TL","notes":"","status":"confirmed","id":1778505408406}
+    {"vehicleId":1778505149839,"customer":"Saeed Hassan","phone":"","start":"2026-05-18","end":"2026-06-08","timeStart":"23:30","timeEnd":"14:30","vehicleDailyRate":"1750","dailyRate":"1900","currency":"TL","referralSource":"Eren Çalışkan","washFee":"0","hgsFee":"0","fineFee":"0","notes":"","status":"confirmed","id":1778505294347},
+    {"vehicleId":1778505195329,"customer":"Fevzi Bey","phone":"","start":"2026-05-14","end":"2026-05-20","timeStart":"14:30","timeEnd":"14:30","vehicleDailyRate":"1400","dailyRate":"1500","currency":"TL","referralSource":"Kadir Ölmez","washFee":"0","hgsFee":"0","fineFee":"0","notes":"","status":"confirmed","id":1778505349222},
+    {"vehicleId":1778505195329,"customer":"Fatma Alyaqut","phone":"","start":"2026-05-20","end":"2026-05-31","timeStart":"15:15","timeEnd":"15:15","vehicleDailyRate":"1300","dailyRate":"1500","currency":"TL","referralSource":"Kadir Ölmez","washFee":"0","hgsFee":"0","fineFee":"0","notes":"","status":"confirmed","id":1778505408406}
   ]
 };
 
-const VEHICLE_KEY = "fleet_vehicles_v2";
-const RES_KEY = "fleet_reservations_v2";
-const IMPORT_KEY = "fleet_simple_imported_backup_at";
-const BACKUP_KEY = "fleet_simple_backups_v1";
+const VEHICLE_KEY = "fleet_vehicles_v3";
+const RES_KEY = "fleet_reservations_v3";
+const IMPORT_KEY = "fleet_import_v3_at";
+const BACKUP_KEY = "fleet_backups_v3";
+const LEGACY_VEHICLE_KEYS = ["fleet_vehicles_v2", "fleet_vehicles_v4"];
+const LEGACY_RES_KEYS = ["fleet_reservations_v2", "fleet_reservations_v4"];
+
 let vehicles = [];
 let reservations = [];
 let selectedVehicleId = null;
 let editVehicleId = null;
 let editReservationId = null;
 let detailMonth = new Date();
+let reportYear = new Date().getFullYear();
+let reportMonth = new Date().getMonth();
+let revenueOpen = false;
 
 const LOGOS = {
   Toyota: `<svg viewBox="0 0 100 100"><g fill="none" stroke="#d71920" stroke-width="4"><ellipse cx="50" cy="50" rx="43" ry="30"/><ellipse cx="50" cy="50" rx="13" ry="30"/><ellipse cx="50" cy="39" rx="21" ry="10"/></g></svg>`,
-  Fiat: `<svg viewBox="0 0 100 100"><rect x="9" y="26" width="82" height="48" rx="10" fill="#9e1b25"/><text x="50" y="58" font-family="Georgia" font-size="24" font-weight="900" text-anchor="middle" fill="#f3d7a0">FIAT</text></svg>`,
+  Fiat: `<svg viewBox="0 0 100 100"><rect x="9" y="26" width="82" height="48" rx="8" fill="#9e1b25"/><text x="50" y="58" font-family="Georgia" font-size="24" font-weight="900" text-anchor="middle" fill="#f3d7a0">FIAT</text></svg>`,
   BMW: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#111"/><circle cx="50" cy="50" r="36" fill="#fff"/><path d="M50 14a36 36 0 0 1 36 36H50z" fill="#2f6fbe"/><path d="M50 86A36 36 0 0 1 14 50h36z" fill="#2f6fbe"/></svg>`,
-  Mercedes: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="43" fill="none" stroke="#555" stroke-width="4"/><path d="M50 50V14M50 50l31 18M50 50 19 68" stroke="#555" stroke-width="5" stroke-linecap="round"/></svg>`
+  Mercedes: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="43" fill="none" stroke="#9aa3ad" stroke-width="4"/><path d="M50 50V14M50 50l31 18M50 50 19 68" stroke="#9aa3ad" stroke-width="5" stroke-linecap="round"/></svg>`,
+  Renault: `<svg viewBox="0 0 100 100"><polygon points="50,10 85,50 50,90 15,50" fill="none" stroke="#d8a92f" stroke-width="6"/><polygon points="50,25 75,50 50,75 25,50" fill="#d8a92f"/></svg>`,
+  Volkswagen: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#001e50"/><text x="50" y="58" font-family="Arial" font-size="32" font-weight="900" text-anchor="middle" fill="#fff">VW</text></svg>`,
+  Ford: `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="46" ry="30" fill="#003478"/><text x="50" y="60" font-family="Georgia" font-size="22" font-style="italic" font-weight="700" text-anchor="middle" fill="#fff">Ford</text></svg>`,
+  Hyundai: `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="46" ry="32" fill="none" stroke="#002c5f" stroke-width="4"/><text x="50" y="60" font-family="Arial" font-size="36" font-style="italic" font-weight="900" text-anchor="middle" fill="#002c5f">H</text></svg>`,
+  Honda: `<svg viewBox="0 0 100 100"><rect x="6" y="30" width="88" height="40" rx="6" fill="none" stroke="#cc0000" stroke-width="3"/><text x="50" y="58" font-family="Arial" font-size="22" font-weight="900" text-anchor="middle" fill="#cc0000">HONDA</text></svg>`,
+  Peugeot: `<svg viewBox="0 0 100 100"><path d="M50 12c-12 0-18 8-18 18s8 22 18 30c10-8 18-22 18-30s-6-18-18-18z" fill="none" stroke="#0a1828" stroke-width="3"/><path d="M50 18c-8 0-12 6-12 12s4 16 12 22c8-6 12-16 12-22s-4-12-12-12z" fill="#0a1828"/></svg>`,
+  Citroen: `<svg viewBox="0 0 100 100"><path d="M20 35l15-15h30l15 15M20 65l15 15h30l15-15" fill="none" stroke="#c40000" stroke-width="6" stroke-linecap="round"/></svg>`,
+  Opel: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#d1a327" stroke-width="4"/><path d="M15 50h70M50 50l-25 14M50 50l25 14" stroke="#d1a327" stroke-width="5" stroke-linecap="round"/></svg>`,
+  Audi: `<svg viewBox="0 0 100 100"><g fill="none" stroke="#bb0a30" stroke-width="3"><circle cx="22" cy="50" r="14"/><circle cx="40" cy="50" r="14"/><circle cx="60" cy="50" r="14"/><circle cx="78" cy="50" r="14"/></g></svg>`
 };
 
 function logo(brand) {
-  return LOGOS[brand] || `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="43" fill="#eef4ea" stroke="#78946f" stroke-width="3"/><text x="50" y="61" text-anchor="middle" font-family="Inter" font-size="31" font-weight="800" fill="#526f4d">${esc((brand || "?").slice(0,1).toUpperCase())}</text></svg>`;
+  return LOGOS[brand] || `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="43" fill="#eef4fb" stroke="#0d2744" stroke-width="3"/><text x="50" y="62" text-anchor="middle" font-family="Arial" font-size="34" font-weight="800" fill="#0d2744">${esc((brand||"?").slice(0,1).toUpperCase())}</text></svg>`;
 }
 function esc(v) {
-  return String(v ?? "").replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
+  return String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function normalizeText(v) {
+  return String(v || "").toLowerCase()
+    .replace(/[ıİ]/g,"i").replace(/[ğĞ]/g,"g").replace(/[üÜ]/g,"u")
+    .replace(/[şŞ]/g,"s").replace(/[öÖ]/g,"o").replace(/[çÇ]/g,"c")
+    .replace(/\s+/g," ").trim();
+}
+function isKadirOlmez(v) {
+  const n = normalizeText(v);
+  return n === "kadir olmez" || n.includes("kadir olmez");
 }
 function readJson(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; }
@@ -505,103 +895,380 @@ function backup(reason) {
   list.unshift({ id: Date.now(), reason, createdAt: new Date().toISOString(), vehicles, reservations });
   localStorage.setItem(BACKUP_KEY, JSON.stringify(list.slice(0, 20)));
 }
-function installBackupOnce() {
-  if (localStorage.getItem(IMPORT_KEY) === BOOTSTRAP_DATA.exportedAt) return;
-  const oldVehicles = readJson(VEHICLE_KEY, null);
-  const oldReservations = readJson(RES_KEY, null);
-  if (oldVehicles || oldReservations) {
-    localStorage.setItem(`${BACKUP_KEY}_before_import_${Date.now()}`, JSON.stringify({ oldVehicles, oldReservations }));
-  }
-  localStorage.setItem(VEHICLE_KEY, JSON.stringify(BOOTSTRAP_DATA.vehicles));
-  localStorage.setItem(RES_KEY, JSON.stringify(BOOTSTRAP_DATA.reservations));
-  localStorage.setItem(IMPORT_KEY, BOOTSTRAP_DATA.exportedAt);
+function storedArray(key) {
+  const value = readJson(key, null);
+  return Array.isArray(value) ? value : [];
+}
+function hasStoredFleetData() {
+  return [VEHICLE_KEY, RES_KEY, ...LEGACY_VEHICLE_KEYS, ...LEGACY_RES_KEYS]
+    .some(key => localStorage.getItem(key) !== null);
+}
+function mergeRecords(lists) {
+  const map = new Map();
+  lists.flat().filter(Boolean).forEach((item, index) => {
+    const key = item.id ?? JSON.stringify(item) ?? index;
+    map.set(String(key), item);
+  });
+  return Array.from(map.values());
 }
 function load() {
-  installBackupOnce();
-  vehicles = readJson(VEHICLE_KEY, BOOTSTRAP_DATA.vehicles);
-  reservations = readJson(RES_KEY, BOOTSTRAP_DATA.reservations);
+  const hasStored = hasStoredFleetData();
+  const vehicleLists = hasStored
+    ? [...LEGACY_VEHICLE_KEYS.map(storedArray), storedArray(VEHICLE_KEY)]
+    : [BOOTSTRAP_DATA.vehicles];
+  const reservationLists = hasStored
+    ? [...LEGACY_RES_KEYS.map(storedArray), storedArray(RES_KEY)]
+    : [BOOTSTRAP_DATA.reservations];
+  vehicles = mergeRecords(vehicleLists);
+  reservations = mergeRecords(reservationLists);
+  localStorage.setItem(IMPORT_KEY, BOOTSTRAP_DATA.exportedAt);
+  persistStorage();
 }
-function save() {
-  backup("Otomatik kayıt yedeği");
+function persistStorage() {
   localStorage.setItem(VEHICLE_KEY, JSON.stringify(vehicles));
   localStorage.setItem(RES_KEY, JSON.stringify(reservations));
 }
+function save() {
+  backup("Otomatik kayıt");
+  persistStorage();
+}
+function backupPayload() {
+  return {
+    app: "olmez-arac-kiralama",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    vehicles,
+    reservations,
+    localBackups: readJson(BACKUP_KEY, [])
+  };
+}
+function openBackupModal() {
+  document.getElementById("backupVehicleCount").textContent = vehicles.length;
+  document.getElementById("backupReservationCount").textContent = reservations.length;
+  document.getElementById("backupText").value = "";
+  openModal("backupModal");
+}
+function backupFileName() {
+  const d = new Date();
+  const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  return `olmez-arac-kiralama-yedek-${stamp}.json`;
+}
+function exportBackup() {
+  const text = JSON.stringify(backupPayload(), null, 2);
+  document.getElementById("backupText").value = text;
+  const blob = new Blob([text], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = backupFileName();
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  showToast("Yedek hazırlandı");
+}
+function copyBackupText() {
+  const box = document.getElementById("backupText");
+  if (!box.value.trim()) box.value = JSON.stringify(backupPayload(), null, 2);
+  box.select();
+  box.setSelectionRange(0, box.value.length);
+  navigator.clipboard?.writeText(box.value).then(
+    () => showToast("Yedek metni kopyalandı"),
+    () => showToast("Metin hazır")
+  );
+}
+function selectBackupFile() {
+  document.getElementById("backupFile").click();
+}
+function restoreBackupFromFile(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    restoreBackup(String(reader.result || ""));
+    input.value = "";
+  };
+  reader.onerror = () => {
+    input.value = "";
+    alert("Yedek dosyası okunamadı.");
+  };
+  reader.readAsText(file);
+}
+function restoreBackupFromText() {
+  restoreBackup(document.getElementById("backupText").value);
+}
+function restoreBackup(text) {
+  let data;
+  try { data = JSON.parse(String(text || "").trim()); }
+  catch { return alert("Yedek metni geçerli değil."); }
+  const nextVehicles = Array.isArray(data.vehicles) ? data.vehicles : null;
+  const nextReservations = Array.isArray(data.reservations) ? data.reservations : null;
+  if (!nextVehicles || !nextReservations) return alert("Bu yedek dosyasında araç ve rezervasyon verisi bulunamadı.");
+  if (!confirm("Yedek geri yüklensin mi? Mevcut kayıtların yerine seçtiğin yedek gelir.")) return;
+  backup("Geri yükleme öncesi");
+  vehicles = nextVehicles;
+  reservations = nextReservations;
+  selectedVehicleId = null;
+  editVehicleId = null;
+  editReservationId = null;
+  persistStorage();
+  renderCards();
+  closeModal("backupModal");
+  showToast("Yedek geri yüklendi");
+}
+function showToast(message) {
+  const root = document.getElementById("toastRoot");
+  root.innerHTML = `<div class="toast">${esc(message)}</div>`;
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => { root.innerHTML = ""; }, 2200);
+}
+function parseISODate(v) {
+  const m = String(v || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12, 0, 0, 0);
+}
 function dateStr(date) {
-  if (!date) return "—";
-  return new Date(date).toLocaleDateString("tr-TR", { day: "2-digit", month: "short", year: "numeric" });
+  const d = parseISODate(date);
+  if (!d) return "—";
+  return d.toLocaleDateString("tr-TR", { day: "2-digit", month: "short", year: "numeric" });
 }
 function iso(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 function daysBetween(start, end) {
+  const s = parseISODate(start), e = parseISODate(end);
+  if (!s || !e) return 0;
+  return Math.max(1, Math.round((e - s) / 86400000));
+}
+function forEachRentalDay(r, cb) {
+  const start = parseISODate(r.start), end = parseISODate(r.end);
   if (!start || !end) return 0;
-  return Math.max(1, Math.round((new Date(end) - new Date(start)) / 86400000));
+  const lastExclusive = end > start ? end : new Date(start.getTime() + 86400000);
+  let count = 0;
+  for (let d = new Date(start); d < lastExclusive; d.setDate(d.getDate() + 1)) {
+    cb(new Date(d));
+    count++;
+  }
+  return count;
+}
+function overlapsMonth(r, year, monthIndex) {
+  let hit = false;
+  forEachRentalDay(r, d => { if (d.getFullYear() === year && d.getMonth() === monthIndex) hit = true; });
+  return hit;
 }
 function activeReservationsFor(vehicleId) {
   return reservations
     .filter(r => r.vehicleId === vehicleId && r.status !== "cancelled")
-    .sort((a,b) => new Date(a.start) - new Date(b.start));
+    .sort((a,b) => String(a.start).localeCompare(String(b.start)));
 }
 function nextReservation(vehicleId) {
   const today = iso(new Date());
   return activeReservationsFor(vehicleId).find(r => r.end >= today) || activeReservationsFor(vehicleId)[0] || null;
 }
+function isVehicleBusyToday(vehicleId) {
+  const today = iso(new Date());
+  return activeReservationsFor(vehicleId).some(r => r.start <= today && r.end >= today);
+}
 function reservationTotal(r) {
   const days = daysBetween(r.start, r.end);
   const customerDaily = Number(r.dailyRate || 0);
   const vehicleDaily = Number(r.vehicleDailyRate || customerDaily || 0);
-  const gross = days * customerDaily;
-  const net = days * vehicleDaily;
-  return { days, gross, net, commission: Math.max(gross - net, 0), curr: r.currency || "TL" };
+  const wash = Number(r.washFee || 0);
+  const hgs = Number(r.hgsFee || 0);
+  const fine = Number(r.fineFee || 0);
+  const rentGross = days * customerDaily;
+  const rentNet = days * vehicleDaily;
+  const extras = wash + hgs + fine;
+  const customerTotal = rentGross + extras;
+  const commission = Math.max(rentGross - rentNet, 0);
+  return {
+    days,
+    rentGross,
+    rentNet,
+    wash, hgs, fine, extras,
+    customerTotal,
+    commission,
+    kadirRevenue: isKadirOlmez(r.referralSource) ? commission : 0,
+    curr: r.currency || "TL"
+  };
+}
+function kadirRevenueForMonth(year, monthIndex) {
+  let total = 0;
+  reservations.forEach(r => {
+    if (r.status === "cancelled" || !isKadirOlmez(r.referralSource)) return;
+    const t = reservationTotal(r);
+    if (!t.commission || t.curr !== "TL") return;
+    const perDay = t.commission / Math.max(t.days, 1);
+    forEachRentalDay(r, d => {
+      if (d.getFullYear() === year && d.getMonth() === monthIndex) total += perDay;
+    });
+  });
+  return Math.round(total);
+}
+function kadirRevenueRowsForMonth(year, monthIndex) {
+  return reservations
+    .filter(r => r.status !== "cancelled" && isKadirOlmez(r.referralSource) && overlapsMonth(r, year, monthIndex))
+    .map(r => {
+      const t = reservationTotal(r);
+      let monthDays = 0;
+      forEachRentalDay(r, d => { if (d.getFullYear() === year && d.getMonth() === monthIndex) monthDays++; });
+      const monthAmount = t.curr === "TL" ? Math.round((t.commission / Math.max(t.days, 1)) * monthDays) : 0;
+      const vehicle = vehicles.find(v => v.id === r.vehicleId);
+      return { r, t, monthDays, monthAmount, vehicle };
+    })
+    .filter(x => x.monthAmount > 0)
+    .sort((a,b) => String(a.r.start).localeCompare(String(b.r.start)));
+}
+function yearRevenue(year) {
+  return Array.from({ length: 12 }, (_, i) => kadirRevenueForMonth(year, i)).reduce((a,b) => a + b, 0);
 }
 function money(amount, curr = "TL") {
   const symbol = { TL:"₺", USD:"$", EUR:"€" }[curr] || "";
-  return `${symbol}${Number(amount || 0).toLocaleString("tr-TR")}`;
+  return `${symbol}${Number(amount || 0).toLocaleString("tr-TR", {maximumFractionDigits: 2})}`;
+}
+function moneyShort(amount, curr = "TL") {
+  const n = Number(amount || 0);
+  const symbol = { TL:"₺", USD:"$", EUR:"€" }[curr] || "";
+  if (n >= 1000000) return `${symbol}${(n/1000000).toFixed(1)}M`;
+  if (n >= 10000) return `${symbol}${Math.round(n/1000)}K`;
+  return `${symbol}${n.toLocaleString("tr-TR")}`;
+}
+function vehicleMeta(v) {
+  return [v.year, v.color, v.fuel].filter(Boolean).map(x => `<span class="soft">${esc(x)}</span>`).join(`<span class="soft">·</span>`);
+}
+function monthNameShort(i) {
+  return ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"][i];
+}
+function monthNameLong(i) {
+  return ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][i];
 }
 
+function updateStats() {
+  document.getElementById("statVehicles").textContent = vehicles.length;
+  const busyToday = vehicles.filter(v => isVehicleBusyToday(v.id)).length;
+  document.getElementById("statBusy").textContent = busyToday;
+  document.getElementById("activeNum").textContent = busyToday;
+  const reportYearLabel = document.getElementById("reportYearLabel");
+  reportYearLabel.textContent = reportYear;
+  reportYearLabel.classList.toggle("active", revenueOpen);
+  document.getElementById("statRevenue").textContent = moneyShort(yearRevenue(reportYear), "TL");
+}
+function renderRevenuePanel() {
+  const panel = document.getElementById("revenuePanel");
+  if (!revenueOpen) {
+    panel.hidden = true;
+    panel.innerHTML = "";
+    return;
+  }
+  panel.hidden = false;
+  const months = Array.from({ length: 12 }, (_, i) => kadirRevenueForMonth(reportYear, i));
+  const total = months.reduce((a,b) => a + b, 0);
+  const rows = kadirRevenueRowsForMonth(reportYear, reportMonth);
+  panel.innerHTML = `
+    <div class="section-head">
+      <div>
+        <div class="section-title">${reportYear} kazanç dağılımı</div>
+        <div class="section-sub">Aylık kazanç görünümü.</div>
+      </div>
+      <div class="year-total">${money(total, "TL")}</div>
+    </div>
+    <div class="month-grid">
+      ${months.map((value, i) => `
+        <button class="month-tile ${i === reportMonth ? "active" : ""}" onclick="setReportMonth(${i})">
+          <div class="month-name">${monthNameShort(i)}</div>
+          <div class="month-money">${value ? moneyShort(value, "TL") : "—"}</div>
+        </button>
+      `).join("")}
+    </div>
+    <div class="month-detail">
+      <div class="section-sub">${monthNameLong(reportMonth)} ${reportYear} · ${money(months[reportMonth], "TL")}</div>
+      ${rows.length ? rows.map(x => `
+        <div class="month-row">
+          <div>
+            <div class="month-row-name">${esc(x.r.customer || "Müşteri")}</div>
+            <div class="month-row-meta">${esc((x.vehicle ? `${x.vehicle.brand} ${x.vehicle.model || ""}` : "Araç").trim())} · ${x.monthDays} gün · ${dateStr(x.r.start)} → ${dateStr(x.r.end)}</div>
+          </div>
+          <div class="month-row-money">${money(x.monthAmount, "TL")}</div>
+        </div>
+      `).join("") : `<div class="month-row"><div><div class="month-row-name">Bu ay kazanç kaydı yok</div><div class="month-row-meta">Seçili ay için kayıt bulunmuyor.</div></div><div class="month-row-money">₺0</div></div>`}
+    </div>
+  `;
+}
 function renderCards() {
   const grid = document.getElementById("carGrid");
+  renderRevenuePanel();
   if (vehicles.length === 0) {
-    grid.innerHTML = `<div class="empty"><div><strong>Araç yok</strong><br>Üstteki Araç Ekle butonuyla başlayın.</div></div>`;
+    grid.innerHTML = `<div class="empty"><div><strong>Kayıt bekleniyor</strong>Filo listesi şu an boş.</div></div>`;
+    updateStats();
     return;
   }
   grid.innerHTML = vehicles.map(v => {
     const next = nextReservation(v.id);
+    const busy = isVehicleBusyToday(v.id);
+    const totals = next ? reservationTotal(next) : null;
+    const meta = vehicleMeta(v);
     return `
-      <button class="car-card" onclick="openVehicleDetail(${v.id})">
+      <button class="car-card ${busy ? 'busy' : 'available'}" onclick="openVehicleDetail(${v.id})">
         <div class="car-head">
           <div class="logo">${logo(v.brand)}</div>
-          <div>
+          <div class="car-title-wrap">
             <div class="car-title">${esc(v.brand)} ${esc(v.model || "")}</div>
-            <div class="plate">${esc(v.plate || "PLAKA")}</div>
+            <div class="vehicle-line">
+              <span class="plate-chip">${esc(v.plate || "PLAKA")}</span>
+              ${meta ? `<span class="soft">·</span>${meta}` : ""}
+            </div>
+          </div>
+          <div class="status-pill ${busy ? 'busy' : 'free'}">
+            <span class="dot"></span>${busy ? 'Dolu' : 'Müsait'}
           </div>
         </div>
         <div class="next-res">
-          <div class="next-label">Yaklaşan Rezervasyon</div>
+          <div class="next-label">${busy ? 'Mevcut rezervasyon' : 'Sıradaki rezervasyon'}</div>
           ${next ? `
             <div class="next-name">${esc(next.customer || "Müşteri")}</div>
-            <div class="next-date">${dateStr(next.start)} ${next.timeStart || ""} - ${dateStr(next.end)} ${next.timeEnd || ""}</div>
+            <div class="next-date">${dateStr(next.start)} → ${dateStr(next.end)} · ${totals.days} gün · Kiraya veren: ${esc(next.referralSource || "—")}</div>
+            <div class="next-revenue">
+              <div class="next-revenue-tag">Müşteri: ${money(totals.customerTotal, totals.curr)}</div>
+              <div class="next-revenue-tag ${totals.kadirRevenue ? "kadir" : ""}">${totals.kadirRevenue ? "Kazanç" : "Komisyon"}: ${money(totals.commission, totals.curr)}</div>
+            </div>
           ` : `
-            <div class="next-name">Boş</div>
-            <div class="next-date">Yaklaşan rezervasyon yok.</div>
+            <div class="next-name" style="color:var(--muted)">Planlanmış rezervasyon yok</div>
           `}
         </div>
       </button>
     `;
   }).join("");
+  updateStats();
+}
+function changeReportYear(delta) {
+  reportYear += delta;
+  renderCards();
+}
+function toggleRevenuePanel() {
+  revenueOpen = !revenueOpen;
+  renderCards();
+}
+function setReportMonth(month) {
+  reportMonth = month;
+  renderCards();
 }
 
-function openModal(id) { document.getElementById(id).classList.add("show"); }
-function closeModal(id) { document.getElementById(id).classList.remove("show"); }
-document.querySelectorAll(".modal-backdrop").forEach(m => m.addEventListener("click", e => { if (e.target === m) m.classList.remove("show"); }));
-
+function openModal(id) {
+  document.getElementById(id).classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+  document.body.style.overflow = "";
+}
+document.querySelectorAll(".modal-backdrop").forEach(m => m.addEventListener("click", e => {
+  if (e.target === m) { m.classList.remove("show"); document.body.style.overflow = ""; }
+}));
 function nameSize(text) {
   const len = String(text || "").length;
-  if (len <= 6) return 10.5;
-  if (len <= 8) return 9;
-  if (len <= 10) return 8;
-  if (len <= 12) return 7.2;
-  return 6.3;
+  if (len <= 6) return 8.4;
+  if (len <= 8) return 7.6;
+  if (len <= 10) return 7;
+  return 6.2;
 }
 function customerLines(name) {
   const parts = String(name || "Dolu").trim().split(/\s+/).filter(Boolean);
@@ -620,7 +1287,7 @@ function setDetailMonth(delta) {
 function openVehicleDetail(id) {
   selectedVehicleId = id;
   const first = nextReservation(id);
-  detailMonth = first ? new Date(`${first.start}T12:00:00`) : new Date();
+  detailMonth = first ? parseISODate(first.start) : new Date();
   renderVehicleDetail();
   openModal("vehicleDetailModal");
 }
@@ -630,7 +1297,7 @@ function renderVehicleDetail() {
   const items = activeReservationsFor(v.id);
   const y = detailMonth.getFullYear();
   const m = detailMonth.getMonth();
-  const monthNames = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+  const todayISO = iso(new Date());
   const first = new Date(y, m, 1);
   const last = new Date(y, m + 1, 0);
   let startWeekday = first.getDay();
@@ -641,10 +1308,11 @@ function renderVehicleDetail() {
   for (let d = 1; d <= last.getDate(); d++) {
     const day = iso(new Date(y, m, d));
     const r = reservationOnDay(items, day);
+    const isToday = day === todayISO;
     cells += `
-      <div class="day ${r ? "busy" : ""}">
+      <div class="day ${r ? "busy" : ""} ${isToday ? "today" : ""}">
         <div class="day-num">${d}</div>
-        ${r ? `<div class="day-customer">${customerLines(r.customer)}</div>` : `<div class="day-free">Boş</div>`}
+        ${r ? `<div class="day-customer">${customerLines(r.customer)}</div>` : `<div class="day-free">Müsait</div>`}
       </div>
     `;
   }
@@ -652,33 +1320,43 @@ function renderVehicleDetail() {
   const remain = (7 - (used % 7)) % 7;
   for (let i = 1; i <= remain; i++) cells += `<div class="day other"><div class="day-num">${i}</div></div>`;
 
-  document.getElementById("detailModalTitle").textContent = `${v.brand} ${v.model}`;
+  document.getElementById("detailModalTitle").textContent = `${v.brand} ${v.model || ""}`.trim();
   document.getElementById("vehicleDetailBody").innerHTML = `
     <div class="detail-top">
       <div class="logo detail-logo">${logo(v.brand)}</div>
       <div>
         <div class="detail-title">${esc(v.brand)} ${esc(v.model || "")}</div>
-        <div class="detail-sub">${esc(v.plate || "")}${v.year ? " · " + esc(v.year) : ""}${v.color ? " · " + esc(v.color) : ""}</div>
+        <div class="detail-sub">
+          <span class="plate-chip">${esc(v.plate || "PLAKA")}</span>
+          ${vehicleMeta(v) ? `<span class="soft">·</span>${vehicleMeta(v)}` : ""}
+        </div>
       </div>
-      <div class="detail-actions">
-        <button class="btn" onclick="openReservationModal(${v.id})">Rezervasyon Ekle</button>
-        <button class="btn" onclick="openVehicleModal(${v.id})">Düzenle</button>
-      </div>
+    </div>
+    <div class="detail-actions">
+      <button class="btn primary" onclick="openReservationModal(${v.id})">Rezervasyon</button>
+      <button class="btn" onclick="openVehicleModal(${v.id})">Düzenle</button>
     </div>
     <div class="calendar-head">
-      <button class="btn" onclick="setDetailMonth(-1)">‹</button>
-      <div class="month-title">${monthNames[m]} ${y}</div>
-      <button class="btn" onclick="setDetailMonth(1)">›</button>
+      <button class="nav-btn" onclick="setDetailMonth(-1)">‹</button>
+      <div class="calendar-title">${monthNameLong(m)} ${y}</div>
+      <button class="nav-btn" onclick="setDetailMonth(1)">›</button>
     </div>
-    <div class="month-grid">${cells}</div>
+    <div class="calendar-grid">${cells}</div>
     <div class="res-list">
       ${items.map(r => {
-        const total = reservationTotal(r);
+        const t = reservationTotal(r);
         return `
           <div class="res-row">
-            <div>
-              <div class="res-main">${esc(r.customer || "Müşteri")}</div>
-              <div class="res-meta">${dateStr(r.start)} ${r.timeStart || ""} - ${dateStr(r.end)} ${r.timeEnd || ""} · ${total.days} gün<br>Araca kalan ${money(total.net, total.curr)} · Komisyon ${money(total.commission, total.curr)}</div>
+            <div class="res-main">${esc(r.customer || "Müşteri")}</div>
+            <div class="res-meta">
+              ${dateStr(r.start)} ${r.timeStart || ""} → ${dateStr(r.end)} ${r.timeEnd || ""}<br>
+              <b style="color:var(--ink)">${t.days} gün</b>${r.referralSource ? ` · Kiraya veren: ${esc(r.referralSource)}` : ""}
+            </div>
+            <div class="res-money-row">
+              <div class="res-money-tag"><span>Müşteri toplamı</span><b>${money(t.customerTotal, t.curr)}</b></div>
+              <div class="res-money-tag ${t.kadirRevenue ? "kadir" : ""}"><span>${t.kadirRevenue ? "Kazanç" : "Komisyon"}</span><b>${money(t.commission, t.curr)}</b></div>
+              <div class="res-money-tag"><span>Araç sahibine</span><b>${money(t.rentNet, t.curr)}</b></div>
+              <div class="res-money-tag"><span>Ek kalemler</span><b>${money(t.extras, t.curr)}</b></div>
             </div>
             <div class="res-actions">
               <button class="btn" onclick="openReservationModal(${v.id}, ${r.id})">Düzenle</button>
@@ -686,7 +1364,7 @@ function renderVehicleDetail() {
             </div>
           </div>
         `;
-      }).join("") || `<div class="res-row"><div class="res-meta">Bu araçta rezervasyon yok.</div></div>`}
+      }).join("") || `<div class="res-row"><div class="res-meta" style="text-align:center">Bu araçta rezervasyon kaydı yok.</div></div>`}
     </div>
   `;
 }
@@ -743,6 +1421,9 @@ function openReservationModal(vehicleId = null, reservationId = null) {
   document.getElementById("rCustomerDaily").value = r.dailyRate || "";
   document.getElementById("rCurrency").value = r.currency || "TL";
   document.getElementById("rReferral").value = r.referralSource || "";
+  document.getElementById("rWash").value = r.washFee || "";
+  document.getElementById("rHgs").value = r.hgsFee || "";
+  document.getElementById("rFine").value = r.fineFee || "";
   document.getElementById("rNotes").value = r.notes || "";
   updateReservationCalc();
   openModal("reservationModal");
@@ -753,15 +1434,32 @@ function getDraftReservation() {
     end: document.getElementById("rEnd").value,
     vehicleDailyRate: document.getElementById("rVehicleDaily").value,
     dailyRate: document.getElementById("rCustomerDaily").value,
-    currency: document.getElementById("rCurrency").value
+    currency: document.getElementById("rCurrency").value,
+    referralSource: document.getElementById("rReferral").value,
+    washFee: document.getElementById("rWash").value,
+    hgsFee: document.getElementById("rHgs").value,
+    fineFee: document.getElementById("rFine").value
   };
 }
 function updateReservationCalc() {
-  const total = reservationTotal(getDraftReservation());
-  document.getElementById("reservationCalc").innerHTML = `
-    <div class="calc-card"><div class="calc-label">Gün</div><div class="calc-value">${total.days || "—"}</div></div>
-    <div class="calc-card"><div class="calc-label">Araca Kalan</div><div class="calc-value">${total.net ? money(total.net, total.curr) : "—"}</div></div>
-    <div class="calc-card"><div class="calc-label">Komisyon</div><div class="calc-value">${total.commission ? money(total.commission, total.curr) : "—"}</div></div>
+  const draft = getDraftReservation();
+  const t = reservationTotal(draft);
+  const qualifies = isKadirOlmez(draft.referralSource);
+  const box = document.getElementById("reservationCalc");
+  box.innerHTML = `
+    <div class="summary-total">
+      <div class="summary-total-label">Müşterinin Ödeyeceği Toplam</div>
+      <div class="summary-total-value">${t.customerTotal ? money(t.customerTotal, t.curr) : "—"}</div>
+    </div>
+    <div class="summary-lines">
+      <div class="summary-line"><span class="summary-line-key">Kira (${t.days || 0} gün)</span><span class="summary-line-val">${money(t.rentGross, t.curr)}</span></div>
+      <div class="summary-line ${!t.wash ? "muted" : ""}"><span class="summary-line-key">Yıkama</span><span class="summary-line-val">${money(t.wash, t.curr)}</span></div>
+      <div class="summary-line ${!t.hgs ? "muted" : ""}"><span class="summary-line-key">HGS</span><span class="summary-line-val">${money(t.hgs, t.curr)}</span></div>
+      <div class="summary-line ${!t.fine ? "muted" : ""}"><span class="summary-line-key">Ceza</span><span class="summary-line-val">${money(t.fine, t.curr)}</span></div>
+      <div class="summary-divider"></div>
+      <div class="summary-line"><span class="summary-line-key">Araç sahibine kalan</span><span class="summary-line-val">${money(t.rentNet, t.curr)}</span></div>
+      <div class="summary-line highlight ${qualifies ? "kadir" : ""}"><span class="summary-line-key">${qualifies ? "Kazanç" : "Komisyon"}</span><span class="summary-line-val">${money(t.commission, t.curr)}</span></div>
+    </div>
   `;
 }
 function saveReservation() {
@@ -770,7 +1468,7 @@ function saveReservation() {
   const start = document.getElementById("rStart").value;
   const end = document.getElementById("rEnd").value;
   if (!vehicleId || !customer || !start || !end) return alert("Araç, müşteri ve tarih zorunludur.");
-  const total = reservationTotal(getDraftReservation());
+  const t = reservationTotal(getDraftReservation());
   const data = {
     vehicleId,
     customer,
@@ -783,8 +1481,13 @@ function saveReservation() {
     dailyRate: document.getElementById("rCustomerDaily").value,
     currency: document.getElementById("rCurrency").value,
     referralSource: document.getElementById("rReferral").value.trim(),
-    commissionAmount: total.commission,
-    commissionCurrency: total.curr,
+    washFee: document.getElementById("rWash").value || "0",
+    hgsFee: document.getElementById("rHgs").value || "0",
+    fineFee: document.getElementById("rFine").value || "0",
+    commissionAmount: t.commission,
+    commissionCurrency: t.curr,
+    kadirRevenue: t.kadirRevenue,
+    customerTotal: t.customerTotal,
     notes: document.getElementById("rNotes").value.trim(),
     status: "confirmed"
   };
@@ -794,6 +1497,8 @@ function saveReservation() {
     reservations.push({ ...data, id: Date.now() });
   }
   selectedVehicleId = vehicleId;
+  reportYear = parseISODate(start)?.getFullYear() || reportYear;
+  reportMonth = parseISODate(start)?.getMonth() ?? reportMonth;
   save();
   renderCards();
   if (document.getElementById("vehicleDetailModal").classList.contains("show")) renderVehicleDetail();
