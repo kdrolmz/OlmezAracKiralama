@@ -45,12 +45,13 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-feature-settings: "cv02","cv03","cv04","tnum";
+  letter-spacing: 0;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; background: none; border: none; }
 input, select, textarea { -webkit-appearance: none; appearance: none; }
 input[type="date"], input[type="time"], input[type="month"] { color-scheme: light; }
-.shell { width: min(100%, 520px); margin: 0 auto; }
+.shell { width: min(100%, 402px); margin: 0 auto; }
 
 .topbar {
   display: flex;
@@ -110,8 +111,8 @@ input[type="date"], input[type="time"], input[type="month"] { color-scheme: ligh
 .backup-btn:active { transform: scale(.97); }
 
 .hero {
-  margin-bottom: 12px;
-  padding: 16px;
+  margin-bottom: 10px;
+  padding: 13px;
   border-radius: 8px;
   color: #fff;
   background:
@@ -120,12 +121,12 @@ input[type="date"], input[type="time"], input[type="month"] { color-scheme: ligh
   border: 1px solid rgba(255,255,255,.1);
   box-shadow: var(--shadow-deep);
 }
-.hero-top { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
-.hero-title { font-size: 22px; line-height: 1.08; font-weight: 760; letter-spacing: 0; }
-.hero-note { margin-top: 5px; color: rgba(255,255,255,.66); font-size: 12.5px; line-height: 1.35; }
-.year-control { display: inline-flex; align-items: center; gap: 7px; padding: 5px; border-radius: 8px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.13); flex: 0 0 auto; }
+.hero-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 11px; }
+.hero-title { font-size: 19px; line-height: 1.08; font-weight: 760; letter-spacing: 0; }
+.hero-note { margin-top: 4px; color: rgba(255,255,255,.62); font-size: 11.5px; line-height: 1.3; }
+.year-control { display: inline-flex; align-items: center; gap: 5px; padding: 4px; border-radius: 8px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.13); flex: 0 0 auto; }
 .year-btn {
-  width: 30px; height: 30px;
+  width: 28px; height: 28px;
   border-radius: 7px;
   display: grid; place-items: center;
   background: rgba(255,255,255,.1);
@@ -134,8 +135,8 @@ input[type="date"], input[type="time"], input[type="month"] { color-scheme: ligh
   line-height: 1;
 }
 .year-label {
-  min-width: 54px;
-  min-height: 30px;
+  min-width: 52px;
+  min-height: 28px;
   padding: 0 8px;
   border-radius: 7px;
   display: grid;
@@ -147,18 +148,18 @@ input[type="date"], input[type="time"], input[type="month"] { color-scheme: ligh
   font-variant-numeric: tabular-nums;
 }
 .year-label.active { background: #fff; color: var(--navy-900); }
-.hero-row { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 8px; }
+.hero-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
 .hero-cell {
   min-width: 0;
-  padding: 12px 10px;
+  padding: 9px 8px;
   border-radius: 8px;
   background: rgba(255,255,255,.08);
   border: 1px solid rgba(255,255,255,.12);
 }
-.hero-label { font-size: 11px; color: rgba(255,255,255,.62); font-weight: 620; }
+.hero-label { font-size: 10px; color: rgba(255,255,255,.62); font-weight: 620; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hero-value {
-  margin-top: 7px;
-  font-size: 22px;
+  margin-top: 5px;
+  font-size: 18px;
   font-weight: 760;
   color: #fff;
   letter-spacing: 0;
@@ -331,6 +332,7 @@ input[type="date"], input[type="time"], input[type="month"] { color-scheme: ligh
   left: 50%;
   transform: translateX(-50%);
   z-index: 15;
+  width: min(382px, calc(100% - 20px));
   display: flex;
   gap: 8px;
   padding: 8px;
@@ -342,11 +344,13 @@ input[type="date"], input[type="time"], input[type="month"] { color-scheme: ligh
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
 }
 .dock-btn {
+  flex: 1;
   min-height: 48px;
-  padding: 0 16px;
+  padding: 0 12px;
   border-radius: 8px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   font-size: 14px;
   font-weight: 700;
@@ -375,7 +379,7 @@ input[type="date"], input[type="time"], input[type="month"] { color-scheme: ligh
 .sheet {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  max-height: 94dvh;
+  max-height: 96dvh;
   display: flex;
   flex-direction: column;
   border-radius: 18px 18px 0 0;
@@ -467,10 +471,16 @@ input[type="date"], input[type="time"], input[type="month"] { color-scheme: ligh
   background: #fff;
   overflow: hidden;
   position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: inherit;
 }
 .day.other { opacity: .34; }
 .day.today { border-color: var(--champagne); box-shadow: inset 0 0 0 1px rgba(197,165,106,.28); }
 .day.busy { background: #fff7f8; border-color: #e5c2c7; }
+.day.busy { cursor: pointer; }
+.day.busy:active { transform: scale(.97); }
 .day-num { font-size: 11px; font-weight: 760; color: var(--ink); font-variant-numeric: tabular-nums; }
 .day.busy .day-num { color: var(--wine); }
 .day.other .day-num { color: var(--muted); }
@@ -568,12 +578,12 @@ select {
 .summary-status.kadir { background: var(--champagne-soft); border-color: #ead9b9; color: #8a6428; }
 .backup-overview {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 12px;
 }
 .backup-stat {
-  padding: 12px;
+  padding: 10px;
   border-radius: 8px;
   background: var(--paper-soft);
   border: 1px solid var(--line);
@@ -581,14 +591,14 @@ select {
 .backup-stat span {
   display: block;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 640;
 }
 .backup-stat b {
   display: block;
   margin-top: 5px;
   color: var(--navy-900);
-  font-size: 22px;
+  font-size: 19px;
   line-height: 1;
   font-weight: 780;
   font-variant-numeric: tabular-nums;
@@ -623,25 +633,72 @@ select {
 }
 
 @media (max-width: 460px) {
-  body { padding-left: 10px; padding-right: 10px; }
+  body { padding: calc(var(--safe-top) + 10px) 10px calc(var(--safe-bot) + 90px); }
   .brand-name { font-size: 16px; }
   .topbar { align-items: flex-start; }
   .top-actions { flex-direction: column; align-items: stretch; gap: 6px; }
   .summary-chip, .backup-btn { min-height: 38px; padding: 7px 10px; }
   .backup-btn { justify-content: center; }
-  .hero { padding: 14px; }
+  .hero { padding: 12px; }
   .hero-top { flex-direction: column; align-items: stretch; }
   .year-control { align-self: flex-start; }
-  .hero-row { grid-template-columns: 1fr 1fr; }
-  .hero-cell:last-child { grid-column: 1 / -1; }
+  .hero-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hero-cell:last-child { grid-column: auto; }
   .month-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .car-head { grid-template-columns: 44px minmax(0, 1fr); }
   .car-head .status-pill { grid-column: 1 / -1; justify-self: start; }
   .logo { width: 44px; height: 44px; }
 }
+@media (max-width: 430px) {
+  .topbar { gap: 8px; margin-bottom: 10px; }
+  .brand { gap: 9px; }
+  .brand-mark { width: 40px; height: 40px; border-radius: 8px; font-size: 20px; }
+  .brand-sub { font-size: 11px; }
+  .hero { margin-bottom: 10px; border-radius: 10px; }
+  .hero-title { font-size: 18px; }
+  .hero-note { font-size: 11px; }
+  .hero-row { gap: 6px; }
+  .hero-cell { padding: 8px 6px; min-height: 54px; }
+  .hero-label { font-size: 9.5px; }
+  .hero-value { font-size: 16px; }
+  .car-card { padding: 12px; border-radius: 10px; }
+  .next-res { margin-top: 10px; padding-top: 10px; }
+  .dock { bottom: calc(var(--safe-bot) + 10px); padding: 7px; border-radius: 14px; }
+  .dock-btn { min-height: 46px; font-size: 13.5px; }
+  .sheet { border-radius: 18px 18px 0 0; max-height: 97dvh; }
+  .sheet-head { padding: 11px 12px 9px; }
+  .sheet-title { font-size: 17px; }
+  .sheet-body { padding: 12px 12px 14px; }
+  .sheet-foot { gap: 8px; padding: 9px 12px calc(9px + var(--safe-bot)); }
+  .btn { min-height: 44px; padding: 0 12px; font-size: 13.5px; }
+  .icon-btn { width: 36px; height: 36px; }
+  .detail-top { grid-template-columns: 52px minmax(0,1fr); gap: 10px; margin-bottom: 12px; }
+  .detail-logo { width: 52px; height: 52px; }
+  .detail-title { font-size: 19px; }
+  .detail-actions { margin-bottom: 12px; }
+  .calendar-head { margin: 10px 0 8px; }
+  .calendar-grid { gap: 3px; }
+  .day-name { font-size: 9.5px; padding: 5px 1px; }
+  .day { min-height: 48px; border-radius: 7px; padding: 4px; }
+  .day-num { font-size: 10.5px; }
+  .day-customer { margin-top: 3px; font-size: 8px; }
+  .day-free { font-size: 8.5px; }
+  .res-list { margin-top: 14px; }
+  .res-row { padding: 11px; border-radius: 10px; }
+  .res-money-row { grid-template-columns: 1fr 1fr; gap: 5px; }
+  .res-money-tag { padding: 6px; font-size: 11px; }
+  .form-grid { gap: 8px; }
+  .section-title-form { margin-top: 12px; padding-top: 10px; font-size: 12.5px; }
+  label { font-size: 11.5px; }
+  input, select, textarea { min-height: 44px; padding: 9px 10px; font-size: 14px; border-radius: 8px; }
+  textarea { min-height: 68px; }
+  .summary-card { padding: 12px; margin-top: 6px; }
+  .summary-total-value { font-size: 25px; }
+  .summary-line { font-size: 12.5px; }
+}
 @media (min-width: 700px) {
-  .shell { width: min(100%, 860px); }
-  .car-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shell { width: min(100%, 402px); }
+  .car-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -803,6 +860,7 @@ select {
       <div class="backup-overview">
         <div class="backup-stat"><span>Araç</span><b id="backupVehicleCount">0</b></div>
         <div class="backup-stat"><span>Rezervasyon</span><b id="backupReservationCount">0</b></div>
+        <div class="backup-stat"><span>Yedek</span><b id="backupBackupCount">0</b></div>
       </div>
       <div class="backup-actions">
         <button class="btn primary" onclick="exportBackup()">Yedek Al</button>
@@ -890,8 +948,12 @@ function readJson(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key) || "null") ?? fallback; }
   catch { return fallback; }
 }
-function backup(reason) {
+function localBackups() {
   const list = readJson(BACKUP_KEY, []);
+  return Array.isArray(list) ? list : [];
+}
+function backup(reason) {
+  const list = localBackups();
   list.unshift({ id: Date.now(), reason, createdAt: new Date().toISOString(), vehicles, reservations });
   localStorage.setItem(BACKUP_KEY, JSON.stringify(list.slice(0, 20)));
 }
@@ -921,12 +983,25 @@ function load() {
     : [BOOTSTRAP_DATA.reservations];
   vehicles = mergeRecords(vehicleLists);
   reservations = mergeRecords(reservationLists);
+  if (!vehicles.length) vehicles = BOOTSTRAP_DATA.vehicles.slice();
+  if (!reservations.length) reservations = BOOTSTRAP_DATA.reservations.slice();
   localStorage.setItem(IMPORT_KEY, BOOTSTRAP_DATA.exportedAt);
   persistStorage();
+  ensureBackupReady();
 }
 function persistStorage() {
   localStorage.setItem(VEHICLE_KEY, JSON.stringify(vehicles));
   localStorage.setItem(RES_KEY, JSON.stringify(reservations));
+}
+function ensureBackupReady() {
+  if (localBackups().length) return;
+  localStorage.setItem(BACKUP_KEY, JSON.stringify([{
+    id: Date.now(),
+    reason: "İlk yedek",
+    createdAt: new Date().toISOString(),
+    vehicles,
+    reservations
+  }]));
 }
 function save() {
   backup("Otomatik kayıt");
@@ -939,12 +1014,13 @@ function backupPayload() {
     exportedAt: new Date().toISOString(),
     vehicles,
     reservations,
-    localBackups: readJson(BACKUP_KEY, [])
+    localBackups: localBackups()
   };
 }
 function openBackupModal() {
   document.getElementById("backupVehicleCount").textContent = vehicles.length;
   document.getElementById("backupReservationCount").textContent = reservations.length;
+  document.getElementById("backupBackupCount").textContent = localBackups().length;
   document.getElementById("backupText").value = "";
   openModal("backupModal");
 }
@@ -1309,12 +1385,21 @@ function renderVehicleDetail() {
     const day = iso(new Date(y, m, d));
     const r = reservationOnDay(items, day);
     const isToday = day === todayISO;
-    cells += `
-      <div class="day ${r ? "busy" : ""} ${isToday ? "today" : ""}">
-        <div class="day-num">${d}</div>
-        ${r ? `<div class="day-customer">${customerLines(r.customer)}</div>` : `<div class="day-free">Müsait</div>`}
-      </div>
-    `;
+    if (r) {
+      cells += `
+        <button type="button" class="day busy ${isToday ? "today" : ""}" onclick="openReservationModal(${v.id}, ${r.id})" aria-label="${esc(r.customer || "Müşteri")} rezervasyonunu düzenle">
+          <div class="day-num">${d}</div>
+          <div class="day-customer">${customerLines(r.customer)}</div>
+        </button>
+      `;
+    } else {
+      cells += `
+        <div class="day ${isToday ? "today" : ""}">
+          <div class="day-num">${d}</div>
+          <div class="day-free">Müsait</div>
+        </div>
+      `;
+    }
   }
   const used = startWeekday + last.getDate();
   const remain = (7 - (used % 7)) % 7;
@@ -1410,7 +1495,9 @@ function openReservationModal(vehicleId = null, reservationId = null) {
   document.getElementById("reservationModalTitle").textContent = reservationId ? "Rezervasyon Düzenle" : "Yeni Rezervasyon";
   document.getElementById("rVehicle").innerHTML = vehicles.map(v => `<option value="${v.id}">${esc(v.brand)} ${esc(v.model || "")} · ${esc(v.plate)}</option>`).join("");
   const r = reservations.find(x => x.id === reservationId) || {};
-  document.getElementById("rVehicle").value = r.vehicleId || vehicleId || vehicles[0]?.id || "";
+  const targetVehicleId = r.vehicleId || vehicleId || vehicles[0]?.id || "";
+  if (targetVehicleId) selectedVehicleId = Number(targetVehicleId);
+  document.getElementById("rVehicle").value = targetVehicleId;
   document.getElementById("rCustomer").value = r.customer || "";
   document.getElementById("rPhone").value = r.phone || "";
   document.getElementById("rStart").value = r.start || "";
