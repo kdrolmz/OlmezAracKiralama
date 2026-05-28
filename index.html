@@ -836,6 +836,12 @@ select {
         <div class="field"><label>HGS Toplamı</label><input id="rHgs" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
         <div class="field full"><label>Trafik Cezası</label><input id="rFine" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
 
+        <div class="section-title-form">Ödemeler</div>
+        <div class="field"><label>Müşteri Ön Ödeme</label><input id="rCustomerPrepayment" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
+        <div class="field"><label>Müşteri Ara Ödeme</label><input id="rCustomerPartialPayment" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
+        <div class="field"><label>Sahibine Ön Ödeme</label><input id="rOwnerPrepayment" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
+        <div class="field"><label>Sahibine Ara Ödeme</label><input id="rOwnerPartialPayment" type="number" inputmode="decimal" placeholder="0" oninput="updateReservationCalc()"></div>
+
         <div class="summary-card" id="reservationCalc"></div>
 
         <div class="section-title-form">Not</div>
@@ -1151,17 +1157,37 @@ function reservationTotal(r) {
   const wash = Number(r.washFee || 0);
   const hgs = Number(r.hgsFee || 0);
   const fine = Number(r.fineFee || 0);
+  const customerPrepayment = Number(r.customerPrepayment || 0);
+  const customerPartialPayment = Number(r.customerPartialPayment || 0);
+  const ownerPrepayment = Number(r.ownerPrepayment || 0);
+  const ownerPartialPayment = Number(r.ownerPartialPayment || 0);
   const rentGross = days * customerDaily;
   const rentNet = days * vehicleDaily;
   const extras = wash + hgs + fine;
   const customerTotal = rentGross + extras;
+  const customerPaid = customerPrepayment + customerPartialPayment;
+  const ownerPaid = ownerPrepayment + ownerPartialPayment;
+  const customerRemaining = Math.max(customerTotal - customerPaid, 0);
+  const ownerRemaining = Math.max(rentNet - ownerPaid, 0);
+  const customerOverpaid = Math.max(customerPaid - customerTotal, 0);
+  const ownerOverpaid = Math.max(ownerPaid - rentNet, 0);
   const commission = Math.max(rentGross - rentNet, 0);
   return {
     days,
     rentGross,
     rentNet,
     wash, hgs, fine, extras,
+    customerPrepayment,
+    customerPartialPayment,
+    ownerPrepayment,
+    ownerPartialPayment,
+    customerPaid,
+    ownerPaid,
     customerTotal,
+    customerRemaining,
+    ownerRemaining,
+    customerOverpaid,
+    ownerOverpaid,
     commission,
     kadirRevenue: isKadirOlmez(r.referralSource) ? commission : 0,
     curr: r.currency || "TL"
@@ -1303,7 +1329,8 @@ function renderCards() {
             <div class="next-name">${esc(next.customer || "Müşteri")}</div>
             <div class="next-date">${dateStr(next.start)} → ${dateStr(next.end)} · ${totals.days} gün · Kiraya veren: ${esc(next.referralSource || "—")}</div>
             <div class="next-revenue">
-              <div class="next-revenue-tag">Müşteri: ${money(totals.customerTotal, totals.curr)}</div>
+              <div class="next-revenue-tag">Müşteri kalan: ${money(totals.customerRemaining, totals.curr)}</div>
+              <div class="next-revenue-tag">Sahibine kalan: ${money(totals.ownerRemaining, totals.curr)}</div>
               <div class="next-revenue-tag ${totals.kadirRevenue ? "kadir" : ""}">${totals.kadirRevenue ? "Kazanç" : "Komisyon"}: ${money(totals.commission, totals.curr)}</div>
             </div>
           ` : `
@@ -1439,8 +1466,14 @@ function renderVehicleDetail() {
             </div>
             <div class="res-money-row">
               <div class="res-money-tag"><span>Müşteri toplamı</span><b>${money(t.customerTotal, t.curr)}</b></div>
-              <div class="res-money-tag ${t.kadirRevenue ? "kadir" : ""}"><span>${t.kadirRevenue ? "Kazanç" : "Komisyon"}</span><b>${money(t.commission, t.curr)}</b></div>
+              <div class="res-money-tag"><span>Müşteriden alınan</span><b>${money(t.customerPaid, t.curr)}</b></div>
+              <div class="res-money-tag"><span>Müşteriden kalan</span><b>${money(t.customerRemaining, t.curr)}</b></div>
+              ${t.customerOverpaid ? `<div class="res-money-tag"><span>Fazla alınan</span><b>${money(t.customerOverpaid, t.curr)}</b></div>` : ""}
               <div class="res-money-tag"><span>Araç sahibine</span><b>${money(t.rentNet, t.curr)}</b></div>
+              <div class="res-money-tag"><span>Sahibine ödenen</span><b>${money(t.ownerPaid, t.curr)}</b></div>
+              <div class="res-money-tag"><span>Sahibine kalan</span><b>${money(t.ownerRemaining, t.curr)}</b></div>
+              ${t.ownerOverpaid ? `<div class="res-money-tag"><span>Sahibine fazla</span><b>${money(t.ownerOverpaid, t.curr)}</b></div>` : ""}
+              <div class="res-money-tag ${t.kadirRevenue ? "kadir" : ""}"><span>${t.kadirRevenue ? "Kazanç" : "Komisyon"}</span><b>${money(t.commission, t.curr)}</b></div>
               <div class="res-money-tag"><span>Ek kalemler</span><b>${money(t.extras, t.curr)}</b></div>
             </div>
             <div class="res-actions">
@@ -1511,6 +1544,10 @@ function openReservationModal(vehicleId = null, reservationId = null) {
   document.getElementById("rWash").value = r.washFee || "";
   document.getElementById("rHgs").value = r.hgsFee || "";
   document.getElementById("rFine").value = r.fineFee || "";
+  document.getElementById("rCustomerPrepayment").value = r.customerPrepayment || "";
+  document.getElementById("rCustomerPartialPayment").value = r.customerPartialPayment || "";
+  document.getElementById("rOwnerPrepayment").value = r.ownerPrepayment || "";
+  document.getElementById("rOwnerPartialPayment").value = r.ownerPartialPayment || "";
   document.getElementById("rNotes").value = r.notes || "";
   updateReservationCalc();
   openModal("reservationModal");
@@ -1525,7 +1562,11 @@ function getDraftReservation() {
     referralSource: document.getElementById("rReferral").value,
     washFee: document.getElementById("rWash").value,
     hgsFee: document.getElementById("rHgs").value,
-    fineFee: document.getElementById("rFine").value
+    fineFee: document.getElementById("rFine").value,
+    customerPrepayment: document.getElementById("rCustomerPrepayment").value,
+    customerPartialPayment: document.getElementById("rCustomerPartialPayment").value,
+    ownerPrepayment: document.getElementById("rOwnerPrepayment").value,
+    ownerPartialPayment: document.getElementById("rOwnerPartialPayment").value
   };
 }
 function updateReservationCalc() {
@@ -1533,10 +1574,13 @@ function updateReservationCalc() {
   const t = reservationTotal(draft);
   const qualifies = isKadirOlmez(draft.referralSource);
   const box = document.getElementById("reservationCalc");
+  const remainingDisplay = (t.customerTotal || t.customerPaid) ? money(t.customerRemaining, t.curr) : "—";
+  const customerOverLine = t.customerOverpaid ? `<div class="summary-line"><span class="summary-line-key">Fazla alınan</span><span class="summary-line-val">${money(t.customerOverpaid, t.curr)}</span></div>` : "";
+  const ownerOverLine = t.ownerOverpaid ? `<div class="summary-line"><span class="summary-line-key">Sahibine fazla verilen</span><span class="summary-line-val">${money(t.ownerOverpaid, t.curr)}</span></div>` : "";
   box.innerHTML = `
     <div class="summary-total">
-      <div class="summary-total-label">Müşterinin Ödeyeceği Toplam</div>
-      <div class="summary-total-value">${t.customerTotal ? money(t.customerTotal, t.curr) : "—"}</div>
+      <div class="summary-total-label">Müşteriden Alınacak Kalan</div>
+      <div class="summary-total-value">${remainingDisplay}</div>
     </div>
     <div class="summary-lines">
       <div class="summary-line"><span class="summary-line-key">Kira (${t.days || 0} gün)</span><span class="summary-line-val">${money(t.rentGross, t.curr)}</span></div>
@@ -1544,7 +1588,16 @@ function updateReservationCalc() {
       <div class="summary-line ${!t.hgs ? "muted" : ""}"><span class="summary-line-key">HGS</span><span class="summary-line-val">${money(t.hgs, t.curr)}</span></div>
       <div class="summary-line ${!t.fine ? "muted" : ""}"><span class="summary-line-key">Ceza</span><span class="summary-line-val">${money(t.fine, t.curr)}</span></div>
       <div class="summary-divider"></div>
-      <div class="summary-line"><span class="summary-line-key">Araç sahibine kalan</span><span class="summary-line-val">${money(t.rentNet, t.curr)}</span></div>
+      <div class="summary-line"><span class="summary-line-key">Müşteri ana toplam</span><span class="summary-line-val">${money(t.customerTotal, t.curr)}</span></div>
+      <div class="summary-line ${!t.customerPaid ? "muted" : ""}"><span class="summary-line-key">Müşteriden alınan</span><span class="summary-line-val">${money(t.customerPaid, t.curr)}</span></div>
+      <div class="summary-line highlight"><span class="summary-line-key">Müşteriden kalan</span><span class="summary-line-val">${money(t.customerRemaining, t.curr)}</span></div>
+      ${customerOverLine}
+      <div class="summary-divider"></div>
+      <div class="summary-line"><span class="summary-line-key">Araç sahibine toplam</span><span class="summary-line-val">${money(t.rentNet, t.curr)}</span></div>
+      <div class="summary-line ${!t.ownerPaid ? "muted" : ""}"><span class="summary-line-key">Sahibine verilen</span><span class="summary-line-val">${money(t.ownerPaid, t.curr)}</span></div>
+      <div class="summary-line highlight"><span class="summary-line-key">Sahibine kalan</span><span class="summary-line-val">${money(t.ownerRemaining, t.curr)}</span></div>
+      ${ownerOverLine}
+      <div class="summary-divider"></div>
       <div class="summary-line highlight ${qualifies ? "kadir" : ""}"><span class="summary-line-key">${qualifies ? "Kazanç" : "Komisyon"}</span><span class="summary-line-val">${money(t.commission, t.curr)}</span></div>
     </div>
   `;
@@ -1571,10 +1624,18 @@ function saveReservation() {
     washFee: document.getElementById("rWash").value || "0",
     hgsFee: document.getElementById("rHgs").value || "0",
     fineFee: document.getElementById("rFine").value || "0",
+    customerPrepayment: document.getElementById("rCustomerPrepayment").value || "0",
+    customerPartialPayment: document.getElementById("rCustomerPartialPayment").value || "0",
+    ownerPrepayment: document.getElementById("rOwnerPrepayment").value || "0",
+    ownerPartialPayment: document.getElementById("rOwnerPartialPayment").value || "0",
     commissionAmount: t.commission,
     commissionCurrency: t.curr,
     kadirRevenue: t.kadirRevenue,
     customerTotal: t.customerTotal,
+    customerPaid: t.customerPaid,
+    customerRemaining: t.customerRemaining,
+    ownerPaid: t.ownerPaid,
+    ownerRemaining: t.ownerRemaining,
     notes: document.getElementById("rNotes").value.trim(),
     status: "confirmed"
   };
